@@ -24,6 +24,7 @@ public class TestNeuralNetwork : MonoBehaviour
             worker.Execute(t.Value);
             Tensor output = worker.PeekOutput();
             Debug.Log("Name Image: " + t.Key + ", Prediction: " + LoadNeuralNetwork.label[output.ArgMax()[0]]);
+            //Debug.Log("Name Image: " + t.Key + ", Tensor: " + output[0] + " " + output[1]);
             t.Value.Dispose();
         }
     }
