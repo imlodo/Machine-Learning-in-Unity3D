@@ -20,7 +20,13 @@ namespace Yolo
         public GameObject go;
         private int countPersonDetect = 0;
         private bool stop = false;
-        public Text testo;
+        public Text testoNumeroRiscontri;
+        public GameObject initialFrame;
+        public GameObject box;
+        public Text topText;
+        public Text bottomTextStatic;
+        public Text bottomTextDinamic;
+        
 
         public void Initialize()
         {
@@ -68,12 +74,17 @@ namespace Yolo
                     if (countPersonDetect == 10) 
                     {
                         stop = true;
-                        SelectPhoto.selectPhoto();
+                        SelectPhoto.Initializate(this);
+                        SelectPhoto.selectPhoto(texturesDetected);
+                        HiddenObject("initialFrame");
+                        HiddenObject("box");
+                        ChangeText("topText", "Clicca sull'immagine che ti rappresenta meglio:");
                     }
-                    testo.text = countPersonDetect + "";
+                    testoNumeroRiscontri.text = countPersonDetect + "";
                 }
             }
-            monitor.UpdateLabels(e.Result.ToList(confidenceThreshold));
+            if(!stop)
+             monitor.UpdateLabels(e.Result.ToList(confidenceThreshold));
         }
 
         void OnScreenResize(object sender, ResizeEventArgs e)
@@ -88,6 +99,40 @@ namespace Yolo
             sizeConfig.RaiseResizeEvent -= OnScreenResize;
             clientManager.RaiseDetectionEvent -= OnDetection;
             clientManager.Dispose();
+        }
+
+        public void HiddenObject(string object_name)
+        {
+            switch(object_name)
+            {
+                case "initialFrame": initialFrame.SetActive(false); break;
+                case "box": box.SetActive(false);break;
+                case "bottomTextStatic":bottomTextStatic.enabled = false; break;
+                case "bottomTextDinamic":bottomTextDinamic.enabled = false; break;
+                default: break;
+            }
+        }
+
+        public void ShowObject(string object_name)
+        {
+            switch (object_name)
+            {
+                case "initialFrame": initialFrame.SetActive(true); break;
+                case "box": box.SetActive(true); break;
+                case "bottomTextStatic": bottomTextStatic.enabled = true; break;
+                case "bottomTextDinamic": bottomTextDinamic.enabled = true; break;
+                default: break;
+            }
+        }
+
+        public void ChangeText(string object_name, string text)
+        {
+            switch(object_name)
+            {
+
+                case "topText": topText.text = text; break;
+                default: break;
+            }
         }
     }
 }

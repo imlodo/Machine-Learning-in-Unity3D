@@ -67,6 +67,7 @@ namespace Yolo
                 Texture2D t = new Texture2D(texture.width, texture.height);
                 t.SetPixels32(texture.GetPixels32());
                 t.Apply();
+                t = Utils.Crop(t, t.width - 100, t.height - 100);
                 handler(t, e);
             }
         }
