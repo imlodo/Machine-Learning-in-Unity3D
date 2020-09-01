@@ -63,11 +63,12 @@ namespace Yolo
                 {
                     Texture2D detected = (Texture2D) sender;
                     texturesDetected[countPersonDetect] = detected;
-                    Debug.Log("Person Detected");
+                    //Debug.Log("Person Detected");
                     countPersonDetect += 1;
-                    if (countPersonDetect == 10)
+                    if (countPersonDetect == 10) 
                     {
                         stop = true;
+                        SelectPhoto.selectPhoto();
                     }
                     testo.text = countPersonDetect + "";
                 }
