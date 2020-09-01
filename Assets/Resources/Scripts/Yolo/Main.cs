@@ -1,4 +1,6 @@
+using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 
 // NOTE: Comment out BindService method in YoloServiceGrpc.cs, lines 91-94
 
@@ -9,12 +11,16 @@ namespace Yolo
         [SerializeField]
         [Range(0f, 1f)]
         float confidenceThreshold = 0;
-
         ClientManager clientManager;
         SizeConfig sizeConfig;
         Texture2D texture;
         Monitor monitor;
         Cam cam;
+        private Texture2D[] texturesDetected = new Texture2D[10];
+        public GameObject go;
+        private int countPersonDetect = 0;
+        private bool stop = false;
+        public Text testo;
 
         public void Initialize()
         {
@@ -35,16 +41,37 @@ namespace Yolo
 
         void Start()
         {
-            Initialize();
+            if(!stop)
+                Initialize();
         }
 
         void Update()
         {
-            clientManager.Update();
+            if(!stop)
+               clientManager.Update();
+            else
+                go.GetComponent<Renderer>().material.mainTexture = texturesDetected[countPersonDetect - 1];
         }
 
         void OnDetection(object sender, DetectionEventArgs e)
         {
+            foreach(YoloItem y in e.Result.ToList(confidenceThreshold))
+            {
+                Debug.Log(y.Type+" "+y.Confidence);
+
+                if (y.Type == "person" && y.Confidence*100 > 60)
+                {
+                    Texture2D detected = (Texture2D) sender;
+                    texturesDetected[countPersonDetect] = detected;
+                    Debug.Log("Person Detected");
+                    countPersonDetect += 1;
+                    if (countPersonDetect == 10)
+                    {
+                        stop = true;
+                    }
+                    testo.text = countPersonDetect + "";
+                }
+            }
             monitor.UpdateLabels(e.Result.ToList(confidenceThreshold));
         }
 

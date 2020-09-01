@@ -2,9 +2,7 @@
 using Unity.Barracuda;
 using UnityEngine;
 using System.IO;
-using ObjectDetection.YoloParser;
 using System.Drawing;
-using ProtoTurtle.BitmapDrawing;
 using Color = UnityEngine.Color;
 
 public class Utils : MonoBehaviour
@@ -31,19 +29,6 @@ public class Utils : MonoBehaviour
         //Debug.Log(shape + " or " + shape.batch + shape.height + shape.width + shape.channels);
         return t;
     }
-    //Questa funzione trasforma l'immagine di input in un tensore di dimensione (1 x width x height x channels)
-    //public static Tensor TransformInputToTensor(int batch, Texture2D texture, int width, int height)
-    //{
-    //    Color[] colors = texture.GetPixels();
-    //    float[] results = new float[(width * height) * 3];
-    //    for (int i = 0; i < (width * height); i++)
-    //    {
-    //        results[i * 3] = colors[i].r;
-    //        results[i * 3 + 1] = colors[i].g;
-    //        results[i * 3 + 2] = colors[i].b;
-    //    }
-    //    return new Tensor(batch, width, height, 3, results);
-    //}
 
     private static Texture2D Resize(Texture2D texture2D, int targetX, int targetY)
     {
@@ -96,27 +81,6 @@ public class Utils : MonoBehaviour
         tex.SetPixels32(data2);
         tex.Apply(true);
         return tex;
-    }
-    public static void DrawRect(Texture2D texture, YoloBoundingBox outline, float scaleFactor, float shiftX, float shiftY)
-    {
-        var x = outline.Dimensions.X * scaleFactor + shiftX;
-        var width = outline.Dimensions.Width * scaleFactor;
-        var y = outline.Dimensions.Y * scaleFactor + shiftY;
-        var height = outline.Dimensions.Height * scaleFactor;
-        texture.filterMode = FilterMode.Point;
-        texture.wrapMode = TextureWrapMode.Clamp;
-        texture.DrawRectangle(new Rect(x, y, width, height), Color.red);
-        texture.Apply();
-    }
-
-    public static void LogDetectedObjects(string imageName, IList<YoloBoundingBox> boundingBoxes)
-    {
-        Debug.Log($".....The objects in the image {imageName} are detected as below....");
-
-        foreach (var box in boundingBoxes)
-        {
-            Debug.Log($"{box.Label} and its Confidence score: {box.Confidence}");
-        }
     }
     public static void SaveToFile(Texture2D texture,string name)
     {

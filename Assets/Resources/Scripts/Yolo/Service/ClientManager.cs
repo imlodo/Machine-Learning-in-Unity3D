@@ -64,7 +64,10 @@ namespace Yolo
             EventHandler<DetectionEventArgs> handler = RaiseDetectionEvent;
             if (handler != null)
             {
-                handler(this, e);
+                Texture2D t = new Texture2D(texture.width, texture.height);
+                t.SetPixels32(texture.GetPixels32());
+                t.Apply();
+                handler(t, e);
             }
         }
     }
