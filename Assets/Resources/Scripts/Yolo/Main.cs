@@ -26,10 +26,14 @@ namespace Yolo
         public Text topText;
         public Text bottomTextStatic;
         public Text bottomTextDinamic;
-        
+        public Canvas canvas;
+        public GameObject areaImage;
 
         public void Initialize()
         {
+            stop = false;
+            countPersonDetect = 0;
+            texturesDetected = new Texture2D[10];
             sizeConfig = GetComponent<SizeConfig>();
             sizeConfig.RaiseResizeEvent += OnScreenResize;
             Size size = sizeConfig.Initialize();
@@ -41,7 +45,11 @@ namespace Yolo
             monitor = GameObject.FindObjectOfType<Monitor>();
             monitor.Initialize(size, LabelColors.CreateFromJSON(Resources.Load<TextAsset>("LabelColors").text));
 
-            clientManager = new ClientManager(ref texture);
+            WebCamTexture backCam = LoadCamera.loadCamera();
+            initialFrame.GetComponent<Renderer>().material.mainTexture = backCam;
+
+            Texture textNoBorder = areaImage.GetComponent<Renderer>().material.mainTexture;
+            clientManager = new ClientManager(ref texture, ref textNoBorder);
             clientManager.RaiseDetectionEvent += OnDetection;
         }
 
@@ -53,8 +61,10 @@ namespace Yolo
 
         void Update()
         {
-            if(!stop)
-               clientManager.Update();
+            if (!stop)
+            {
+                clientManager.Update();
+            }
             else
                 go.GetComponent<Renderer>().material.mainTexture = texturesDetected[countPersonDetect - 1];
         }
@@ -74,10 +84,12 @@ namespace Yolo
                     if (countPersonDetect == 10) 
                     {
                         stop = true;
-                        SelectPhoto.Initializate(this);
-                        SelectPhoto.selectPhoto(texturesDetected);
+                        SelectPhoto.Initializate(this, texturesDetected);
+                        SelectPhoto.selectPhoto();
                         HiddenObject("initialFrame");
                         HiddenObject("box");
+                        HiddenObject("bottomTextStatic");
+                        HiddenObject("bottomTextDinamic");
                         ChangeText("topText", "Clicca sull'immagine che ti rappresenta meglio:");
                     }
                     testoNumeroRiscontri.text = countPersonDetect + "";

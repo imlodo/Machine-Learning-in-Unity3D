@@ -13,14 +13,16 @@ namespace Yolo
         Channel channel;
         ClientWrapper client;
         Texture2D texture;
+        Texture t;
         YoloResult result; // re-use, reference
 
         Stopwatch timer;
         const int minInterval = 0; // throttle requests
         bool requestEnabled => timer.Elapsed.Milliseconds >= minInterval;
 
-        public ClientManager(ref Texture2D texture)
+        public ClientManager(ref Texture2D texture, ref Texture text)
         {
+            t = text;
             channel = new Channel("127.0.0.1:50052", ChannelCredentials.Insecure);
             client = new ClientWrapper(new YoloService.YoloServiceClient(channel));
 
@@ -64,11 +66,8 @@ namespace Yolo
             EventHandler<DetectionEventArgs> handler = RaiseDetectionEvent;
             if (handler != null)
             {
-                Texture2D t = new Texture2D(texture.width, texture.height);
-                t.SetPixels32(texture.GetPixels32());
-                t.Apply();
-                t = Utils.Crop(t, t.width - 100, t.height - 100);
-                handler(t, e);
+                Texture2D temp = TextureExtentions.ToTexture2D(t);
+                handler(temp, e);
             }
         }
     }
