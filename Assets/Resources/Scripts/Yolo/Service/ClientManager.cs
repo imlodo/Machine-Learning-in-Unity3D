@@ -66,7 +66,7 @@ namespace Yolo
             EventHandler<DetectionEventArgs> handler = RaiseDetectionEvent;
             if (handler != null)
             {
-                Texture2D temp = TextureExtentions.ToTexture2D(t);
+                Texture2D temp = Utils.ResizeNormalTexture(t, t.width, t.height);
                 handler(temp, e);
             }
         }

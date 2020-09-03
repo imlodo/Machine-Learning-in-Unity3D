@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LoadNeuralNetwork : MonoBehaviour
 {
-    private static NNModel modelAsset = (NNModel)Resources.Load("NeuralNetwork/gender");
+    private static NNModel modelAsset = (NNModel)Resources.Load("NeuralNetwork/genderCNN");
     public static string[] label = { "Man", "Woman" };
     void Start()
     {

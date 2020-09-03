@@ -18,6 +18,7 @@ public class SelectPhoto : MonoBehaviour
     private static int current_page = 0;
     private static Texture2D selectedImage = null;
     private static Main main;
+    private static Color color;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,11 +34,13 @@ public class SelectPhoto : MonoBehaviour
     {
         main = main_passed;
         imagesDetected = images;
+        color = main.border.GetComponent<Renderer>().material.color;
         _subInit();
     }
 
     public static void _subInit()
     {
+        main.border.GetComponent<Renderer>().material.SetColor("_Color", color);
         calculateNumPage(imagesDetected.Length);
         if (num_page > 0 && current_page == 0)
             current_page = 1;

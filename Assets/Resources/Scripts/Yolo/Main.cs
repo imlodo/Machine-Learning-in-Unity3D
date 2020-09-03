@@ -28,11 +28,22 @@ namespace Yolo
         public Text bottomTextDinamic;
         public Canvas canvas;
         public GameObject areaImage;
+        public GameObject border;
 
         public void Initialize()
         {
+            GameObject monitorGameObject = canvas.transform.GetChild(0).gameObject;
+            int countChild = monitorGameObject.transform.childCount;
+            //Debug.Log(countChild);
+            for (int i = 0; i < countChild; i+=1)
+            {
+                Transform tmp = monitorGameObject.transform.GetChild(i);
+                if (tmp.name.Contains("(Clone)"))
+                    Destroy(tmp.gameObject);
+            }
             stop = false;
             countPersonDetect = 0;
+            testoNumeroRiscontri.text = countPersonDetect + "";
             texturesDetected = new Texture2D[10];
             sizeConfig = GetComponent<SizeConfig>();
             sizeConfig.RaiseResizeEvent += OnScreenResize;

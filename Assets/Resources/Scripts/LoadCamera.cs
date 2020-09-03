@@ -19,7 +19,9 @@ public class LoadCamera : MonoBehaviour
     public static WebCamTexture loadCamera()
     {
         if (backCam == null)
-            backCam = new WebCamTexture();
+            backCam = new WebCamTexture("HD Pro Webcam C920");
+        //foreach (WebCamDevice w in WebCamTexture.devices)
+        //    Debug.Log(w.name);
         return backCam;
     }
 }

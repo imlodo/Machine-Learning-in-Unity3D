@@ -30,11 +30,22 @@ public class Utils : MonoBehaviour
         return t;
     }
 
-    private static Texture2D Resize(Texture2D texture2D, int targetX, int targetY)
+    public static Texture2D Resize(Texture2D texture2D, int targetX, int targetY)
     {
         RenderTexture rt = new RenderTexture(targetX, targetY, 24);
         RenderTexture.active = rt;
         Graphics.Blit(texture2D, rt);
+        Texture2D result = new Texture2D(targetX, targetY);
+        result.ReadPixels(new Rect(0, 0, targetX, targetY), 0, 0);
+        result.Apply();
+        return result;
+    }
+
+    public static Texture2D ResizeNormalTexture(Texture texture, int targetX, int targetY)
+    {
+        RenderTexture rt = new RenderTexture(targetX, targetY, 24);
+        RenderTexture.active = rt;
+        Graphics.Blit(texture, rt);
         Texture2D result = new Texture2D(targetX, targetY);
         result.ReadPixels(new Rect(0, 0, targetX, targetY), 0, 0);
         result.Apply();
@@ -88,6 +99,30 @@ public class Utils : MonoBehaviour
         //Debug.LogError(filePath);
         File.WriteAllBytes(
             filePath, texture.EncodeToPNG());
+    }
+
+    public static Tensor NormalizeTensor(Tensor tensore)
+    {
+        float[] IMAGE_MEAN = { (float)0.485, (float)0.456, (float)0.406 };
+        float[] IMAGE_STD = { (float)0.229, (float)0.224, (float)0.225 };
+        Tensor temp = new Tensor(1, 64, 64, 3);
+
+        for (int y = 0; y < 64; y++)
+        {
+            for (int x = 0; x < 64; x++)
+            {
+                float r = (tensore[0, y, x, 0] - IMAGE_MEAN[0]) / IMAGE_STD[0];
+                float g = (tensore[0, y, x, 1] - IMAGE_MEAN[1]) / IMAGE_STD[1];
+                float b = (tensore[0, y, x, 2] - IMAGE_MEAN[2]) / IMAGE_STD[2];
+                temp[0, y, x, 0] = r;
+                temp[0, y, x, 1] = g;
+                temp[0, y, x, 2] = b;
+
+            }
+        }
+
+        return temp;
+
     }
 
 }

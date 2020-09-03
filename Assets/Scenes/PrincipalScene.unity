@@ -692,6 +692,7 @@ MonoBehaviour:
   bottomTextDinamic: {fileID: 1624166632}
   canvas: {fileID: 11637115}
   areaImage: {fileID: 1243974571}
+  border: {fileID: 1047738943}
 --- !u!4 &1332470274
 Transform:
   m_ObjectHideFlags: 0

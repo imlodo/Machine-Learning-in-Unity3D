@@ -4,6 +4,7 @@ using System.Data;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
+using Unity.Barracuda;
 using Yolo;
 
 public class DetectGender : MonoBehaviour
@@ -40,11 +41,6 @@ public class DetectGender : MonoBehaviour
         //Debug.Log(img);
     }
 
-    public void EvalutateGender()
-    {
-
-    }
-
     public static void back()
     {
         Destroy(g);
@@ -54,5 +50,27 @@ public class DetectGender : MonoBehaviour
         }
         SelectPhoto._subInit();
         SelectPhoto.selectPhoto();
+    }
+
+    public static void detect()
+    {
+        Tensor tensor = Utils.TransformInputToTensor(1, img, Utils.IMAGE_SIZE, Utils.IMAGE_SIZE);
+        tensor = Utils.NormalizeTensor(tensor);
+        IWorker worker = LoadNeuralNetwork.getModel();
+        worker.Execute(tensor);
+        Tensor output = worker.PeekOutput();
+        string prediction = LoadNeuralNetwork.label[output.ArgMax()[0]];
+        Debug.Log("Prediction: " + prediction);
+        if(prediction == LoadNeuralNetwork.label[0])
+        {
+            main.ChangeText("topText", "La rete neurale GenderCNN ti ha rilevato come: Uomo");
+            main.border.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
+        }
+        else
+        {
+            main.ChangeText("topText", "La rete neurale GenderCNN ti ha rilevato come: Donna");
+            main.border.GetComponent<Renderer>().material.SetColor("_Color", Color.magenta);
+        }
+        tensor.Dispose();
     }
 }

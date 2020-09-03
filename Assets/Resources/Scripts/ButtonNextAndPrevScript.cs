@@ -53,4 +53,9 @@ public class ButtonNextAndPrevScript : MonoBehaviour
     {
         DetectGender.back();
     }
+
+    public void detect()
+    {
+        DetectGender.detect();
+    }
 }
